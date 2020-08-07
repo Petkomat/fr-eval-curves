@@ -34,4 +34,4 @@ The function `example` in `main.py` gives an example of how to
 - construct a curve
 - plot the curve
 
-The code supports regression, classification etc. problems. Instead of adding features one by one to the set of used features, we can follow a more general linear (adding 10 features per step), quadratic or exponential progression.
+The code supports regression, classification etc. problems. Instead of adding features one by one to the set of used features, we can follow a more general linear (e.g., adding 10 features per step), quadratic or exponential progression.
