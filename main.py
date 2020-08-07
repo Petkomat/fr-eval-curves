@@ -10,7 +10,7 @@ def compute_feature_set_sizes(n_features, basic_step, step_type):
     Computes the sizes of feature subsets.
 
     :param n_features: number of features in data
-    :param basic_step: int, Its meaning depends on the value of the step_type argument.
+    :param basic_step: float, Its meaning depends on the value of the step_type argument.
     :param step_type: str, An element of the list ALLOWED_STEPS.
 
             If linear, the sizes are 1 + k * basic_step, for 1 <= 1 + k * basic_step <= n_features
@@ -20,12 +20,13 @@ def compute_feature_set_sizes(n_features, basic_step, step_type):
     :return: The list of the computed feature sizes. If the last size in the sequence is smaller than n_features,
              the value n_features is appended to it.
     """
+    warning_given = False
     sizes = []
     s0 = 1
     iterations = 0
     while s0 <= n_features:
         iterations += 1
-        sizes.append(s0)
+        sizes.append(round(s0))
         if step_type == STEP_TYPE_LINEAR:
             s0 += basic_step
         elif step_type == STEP_TYPE_QUADRATIC:
@@ -36,10 +37,9 @@ def compute_feature_set_sizes(n_features, basic_step, step_type):
             raise ValueError(
                 f"Wrong step type: Expected an element of {ALLOWED_STEPS}, got {step_type}"
             )
-        if len(sizes) >= 2 and sizes[-1] == sizes[-2]:
-            raise ValueError(
-                f"Improper argument combination: basic step and step type would result in an infinite loop."
-            )
+        if len(sizes) >= 2 and sizes[-1] == sizes[-2] and not warning_given:
+            print("Argument combination (basic step and step type) may lead to an infinite loop.")
+            warning_given = True
     if sizes[-1] < n_features:
         sizes.append(n_features)
     return sizes
