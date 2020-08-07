@@ -84,8 +84,25 @@ def compute_curve(xs, y, model, model_quality_measure,
         model.fit(xs_train[:, features], y_train)
         y_predicted = model.predict(xs_test[:, features])
         quality = model_quality_measure(y_test, y_predicted)
-        curve.append(quality)
+        curve.append((len(features), quality))
     return curve
+
+
+def plot_curve(curve):
+    """
+    Plots the curve
+    :param curve: [(number of features1, quality1), (number of features2, quality2), ...]
+    :return:
+    """
+    import matplotlib.pyplot as plt
+    x = list(range(len(curve)))
+    x_labels = [str(n) for n, _ in curve]
+    y = [q for _, q in curve]
+    plt.plot(x, y)
+    plt.xticks(x, x_labels)
+    plt.xlabel("feature subset size")
+    plt.ylabel("quality")
+    plt.show()
 
 
 def example():
@@ -100,8 +117,16 @@ def example():
     y_classification = [int(y > y_bar) for y in y_regression]
     model = KNeighborsClassifier()
 
+    train_i = list(range(500))
+    test_i = list(range(500, 1000))
+    xs_train = xs_all[train_i, :]
+    xs_test = xs_all[test_i, :]
+    y_train = y_classification[:500]
+    y_test = y_classification[500:]
 
-
+    curve = compute_curve((xs_train, xs_test), (y_train, y_test), model, accuracy_score, feature_order=order)
+    plot_curve(curve)
 
 
 if __name__ == "__main__":
+    example()
